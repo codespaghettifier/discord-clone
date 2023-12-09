@@ -1,9 +1,10 @@
-import {Image, ScrollView, StyleSheet, Text, View} from "react-native";
+import {ScrollView, StyleSheet, Text, View} from "react-native";
 import Button from "../../components/Button";
 import ChannelCard from "../../components/ChannelCard";
 import {firestoreDB} from "../../firebaseConfig";
 import {useEffect, useState} from "react";
-import {collection, doc, getDocs} from "firebase/firestore";
+import {collection, getDocs} from "firebase/firestore";
+import {router} from "expo-router";
 
 export default function Home()
 {
@@ -11,7 +12,14 @@ export default function Home()
 
     const onChannelCreate = () =>
     {
-        console.log("Utwórz kanał");
+        router.push("/createRoom");
+    }
+
+    const onChannelPress = (name: string) => {
+        console.log(`Channel ${name} pressed`);
+
+        
+        
     }
     
     useEffect(() =>
@@ -36,7 +44,7 @@ export default function Home()
             <Text style={styles.title}>Dołącz do kanału</Text>
             <ScrollView style={styles.channelList}>
                 {channels.map((channel) => (
-                    <ChannelCard key={channel.name} name={channel.name} members={channel.members} />
+                    <ChannelCard key={channel.name} onPress={() => {onChannelPress(channel.name)}} name={channel.name} members={channel.members} />
                     ))}
             </ScrollView>
             <View style={styles.buttonContainer}>

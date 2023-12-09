@@ -1,20 +1,21 @@
 import { FC } from "react";
-import {Image, StyleSheet, Text, View} from "react-native";
+import {Image, Pressable, StyleSheet, Text, View} from "react-native";
 
 type ChanneldData = {
+    onPress: () => void;
     name: string;
     members: number;
 }
 
-const ChannelCard: FC<ChanneldData> = ({ name, members }) => {
+const ChannelCard: FC<ChanneldData> = ({ onPress, name, members }) => {
     return (
-        <View style={styles.channelCard}>
+        <Pressable onPress={onPress} style={styles.channelCard}>
             <Image source={require("../assets/images/favicon.png")} />
             <View style={styles.channelInfo}>
                 <Text>{name}</Text>
                 <Text>{members} członków</Text>
             </View>
-        </View>
+        </Pressable>
     );
 }
 
