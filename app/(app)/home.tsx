@@ -1,37 +1,54 @@
 import {Image, ScrollView, StyleSheet, Text, View} from "react-native";
 import Button from "../../components/Button";
 import ChannelCard from "../../components/ChannelCard";
+import {firestoreDB} from "../../firebaseConfig";
+import {useEffect, useState} from "react";
+import {collection, doc, getDocs} from "firebase/firestore";
 
 export default function Home()
 {
-    const onChannelCreate = () => {
+    const [channels, setChannels] = useState<ChanneldData[]>([]);
+
+    const onChannelCreate = () =>
+    {
         console.log("Utwórz kanał");
     }
-
-    type ChanneldData = {
-        name: string;
-        members: number;
-    }
-
-    const test: ChanneldData[] = []
-    for(let i = 0; i < 42; i++)
+    
+    useEffect(() =>
     {
-        test.push({name: `Kanał ${i}`, members: i})
-    }
-
+        const getChannels = async () =>
+        {
+            const {docs} = await getDocs(collection(firestoreDB, "rooms"));
+            if (docs.length)
+            {
+                setChannels([...docs.map((doc) => {
+                    const name: string = doc.id;
+                    const members: number = new Set(doc.data().messages.map((message: any) => message.username)).size;
+                    return {name, members};
+                })]);
+            }
+        };
+        getChannels();
+    }, []);
+    
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Dołącz do kanału</Text>
             <ScrollView style={styles.channelList}>
-                {test.map((channel) => (
+                {channels.map((channel) => (
                     <ChannelCard key={channel.name} name={channel.name} members={channel.members} />
-                ))}
+                    ))}
             </ScrollView>
             <View style={styles.buttonContainer}>
                 <Button onPress={onChannelCreate} label="Utwórz własny kanał" />
             </View>
         </View>
     );
+}
+
+type ChanneldData = {
+    name: string;
+    members: number;
 }
 
 const styles = StyleSheet.create({
