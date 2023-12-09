@@ -7,40 +7,40 @@ import {firestoreDB} from "../../firebaseConfig";
 import {setDoc, doc} from "firebase/firestore";
 import {router} from "expo-router";
 
-const defaultValues = {
-    name: "",
-};
 
-const onSubmit = async ({name}: typeof defaultValues) =>
+const CreateRoom: FC = () =>
 {
-    const createChannel = async (name: string) =>
+    const defaultValues = {
+        name: "",
+    };
+
+    const {control, handleSubmit, setError} = useForm({defaultValues});
+
+    const onSubmit = async ({name}: typeof defaultValues) =>
     {
+        const createChannel = async (name: string) =>
+        {
+            try
+            {
+                setDoc(doc(firestoreDB, `rooms/${name}/`), {messages: []})
+            } catch (error)
+            {
+                console.error(error);
+            }
+        }
+    
         try
         {
-            setDoc(doc(firestoreDB, `rooms/${name}/`), {messages: []})
+            await createChannel(
+                name
+            );
+            router.push("/home");
         } catch (error)
         {
             console.error(error);
         }
-    }
-
-    try
-    {
-        await createChannel(
-            name
-        );
-        router.push("/home");
-    } catch (error)
-    {
-        console.error(error);
-    }
-};
-
-const CreateRoom: FC = () =>
-{
-    const {control, handleSubmit, setError} = useForm({defaultValues});
-
-
+    };
+    
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Utwórz nowy kanał</Text>

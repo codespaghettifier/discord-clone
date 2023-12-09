@@ -18,7 +18,7 @@ export default function Home()
     const onChannelPress = (name: string) => {
         console.log(`Channel ${name} pressed`);
 
-        
+        router.push(`/messagesView/${name}`)
         
     }
     
